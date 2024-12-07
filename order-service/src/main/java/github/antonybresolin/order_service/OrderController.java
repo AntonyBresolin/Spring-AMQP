@@ -1,5 +1,7 @@
 package github.antonybresolin.order_service;
 
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +14,15 @@ public class OrderController {
     @Autowired
     private OrderRepository orders;
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+
     @PostMapping
     public Order create(@RequestBody Order order) {
         orders.save(order);
+        Message message = new Message(order.getId().toString().getBytes());
+        rabbitTemplate.send("orders.v1.order-created", message);
         return order;
     }
 
