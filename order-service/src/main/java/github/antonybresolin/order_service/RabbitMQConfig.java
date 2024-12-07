@@ -1,5 +1,6 @@
 package github.antonybresolin.order_service;
 
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -12,15 +13,13 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    @Bean
-    public Queue queueCashback() {
-        return new Queue("orders.v1.order-created.generate-cashback");
-    }
 
     @Bean
-    public Queue queueNotification() {
-        return new Queue("orders.v1.order-created.send-notification");
+    public FanoutExchange fanoutExchange() {
+        return new FanoutExchange("orders.v1.order-created");
     }
+
+
 
 
     @Bean

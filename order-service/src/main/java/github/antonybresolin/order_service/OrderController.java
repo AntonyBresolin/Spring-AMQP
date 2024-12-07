@@ -22,8 +22,7 @@ public class OrderController {
     public Order create(@RequestBody Order order) {
         orders.save(order);
         OrderCreatedEvent event = new OrderCreatedEvent(order.getId(), order.getValue());
-        rabbitTemplate.convertAndSend("orders.v1.order-created.generate-cashback", event);
-        rabbitTemplate.convertAndSend("orders.v1.order-created.send-notification", event);
+        rabbitTemplate.convertAndSend("orders.v1.order-created", "", event);
         return order;
     }
 
