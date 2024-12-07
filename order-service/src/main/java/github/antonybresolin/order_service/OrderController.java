@@ -21,8 +21,8 @@ public class OrderController {
     @PostMapping
     public Order create(@RequestBody Order order) {
         orders.save(order);
-        Message message = new Message(order.getId().toString().getBytes());
-        rabbitTemplate.send("orders.v1.order-created", message);
+        OrderCreatedEvent event = new OrderCreatedEvent(order.getId(), order.getValue());
+        rabbitTemplate.convertAndSend("orders.v1.order-created", event);
         return order;
     }
 
